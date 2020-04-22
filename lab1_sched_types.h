@@ -22,11 +22,11 @@ typedef struct process
 	int Service_time;
 	int Remain_time;
 	int Work_time;
+	bool Finish;
+	int check_first_insert;
 	int Pass_value;
 	int Ticket_value;
 	float Stride_value;
-	bool Finish;
-	int check_first_insert;
 }PROCESS;
 
 typedef struct processQueueForMLFQ
@@ -34,7 +34,6 @@ typedef struct processQueueForMLFQ
 	int Quantum;
 	int Rear;
 	int Front;
-	int Priority;
 	int List_index[5];
 }PQUEUE;
 

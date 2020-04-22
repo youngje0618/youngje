@@ -76,35 +76,35 @@ void Init2(PROCESS* p) // for FIFO, RR, MLFQ
 {
 	p[0].Pid='A';
 	p[0].Arrive_time=0;
-	p[0].Service_time=2;
+	p[0].Service_time=4;
 	p[0].Remain_time=p[0].Service_time;
 	p[0].Work_time=0;
 	p[0].Finish=false;
 	p[0].check_first_insert=0;
 	p[1].Pid='B';
-	p[1].Arrive_time=4;
+	p[1].Arrive_time=3;
 	p[1].Service_time=6;
 	p[1].Remain_time=p[1].Service_time;
 	p[1].Work_time=0;
 	p[1].Finish=false;
 	p[1].check_first_insert=0;
 	p[2].Pid='C';
-	p[2].Arrive_time=1;
-	p[2].Service_time=3;
+	p[2].Arrive_time=5;
+	p[2].Service_time=5;
 	p[2].Remain_time=p[2].Service_time;
 	p[2].Work_time=0;
 	p[2].Finish=false;
 	p[2].check_first_insert=0;
 	p[3].Pid='D';
-	p[3].Arrive_time=9;
+	p[3].Arrive_time=7;
 	p[3].Service_time=3;
 	p[3].Remain_time=p[3].Service_time;
 	p[3].Work_time=0;
 	p[3].Finish=false;
 	p[3].check_first_insert=0;
 	p[4].Pid='E';
-	p[4].Arrive_time=5;
-	p[4].Service_time=5;
+	p[4].Arrive_time=9;
+	p[4].Service_time=2;
 	p[4].Remain_time=p[4].Service_time;
 	p[4].Work_time=0;
 	p[4].Finish=false;
@@ -178,7 +178,7 @@ int CM(PROCESS* p) // for Stride
 void FIFO(PROCESS* p) // by YJ
 {
 	int time=0;
-	int min;                               //
+	int min;
 	int min_index;
 	int total_time=TotalTime(p);
 	int **matrix=(int**)malloc(sizeof(int*)*5);
@@ -197,11 +197,11 @@ void FIFO(PROCESS* p) // by YJ
 	{
 		min=total_time;
 		min_index=i;
-		if(p[i].Finish==false)                      //processlist에 있는 실행된 process가 종료 되지 않았을때 
+		if(p[i].Finish==false)
 		{
 			min=p[i].Arrive_time;
 		}
-		for(int j=0;j<5;j++)                       // 모든 processs  
+		for(int j=0;j<5;j++)
 		{
 			if(i!=j)
 			{
@@ -212,7 +212,7 @@ void FIFO(PROCESS* p) // by YJ
 				}
 			}
 		}
-		for(int j=p[min_index].Service_time;p[min_index].Remain_time>0;j--)    //실행시간이 모두 소요 될 동안 for문 반복
+		for(int j=p[min_index].Service_time;p[min_index].Remain_time>0;j--)
 		{
 			p[min_index].Finish=true;
 			p[min_index].Remain_time--;
@@ -350,7 +350,6 @@ void RR(PROCESS* p,int quantum) // by TY
 			break;
 		}
 	}
-	printf("Quantum:%d\n",quantum);
 	for(int i=0;i<5;i++)
 	{
 		for(int j=0;j<total_time;j++)
@@ -380,9 +379,9 @@ void MLFQ(PROCESS* p,int case) // by YJ
 	int time=0;		
 	int total_time=TotalTime(p);
 	int **matrix=(int**)malloc(sizeof(int*)*5);
-	int timequantum_1[4]={1,1,1,1};                //time_quantum case1
-	int timequantum_2[4] = { 1,2,4,8 };            //time_quantum case2
-	int num = 0;        //큐 안에 두 개 이상의 큐가 있는 지 확인할때 사용
+	int timequantum_1[4]={1,1,1,1};
+	int timequantum_2[4] = { 1,2,4,8 };
+	int num = 0; 
 
 	for(int i=0;i<5;i++)
 	{
@@ -397,7 +396,7 @@ void MLFQ(PROCESS* p,int case) // by YJ
 	}
 	for(int i=0;i<4;i++)
 	{
-		if(case==1)                //두 개의 time_quantum case가 존재하기 때문
+		if(case==1)
 		{
 			myQueue[i].Quantum=timequantum_1[i];
 		}
@@ -426,13 +425,13 @@ void MLFQ(PROCESS* p,int case) // by YJ
 
 		int i = 0;
 
-		while(1){   
-			if (myQueue[i].Front < myQueue[i].Rear)          //queue에 process가 들어있음을 뜻함
+		while(1){
+			if (myQueue[i].Front < myQueue[i].Rear)
 			{
-				if (num == 1) {        //총 한개의 process가 있을때 ==> 이때는 다음 큐로 내려가지 않음
-					if (p[myQueue[i].List_index[myQueue[i].Front]].Remain_time)   //remain_time 이 남아 있을 때 실행
+				if (num == 1) { 
+					if (p[myQueue[i].List_index[myQueue[i].Front]].Remain_time)  
 					{
-						for (int k = 0; k < myQueue[i].Quantum; k++) {       //tim,e quantum만큼 반복
+						for (int k = 0; k < myQueue[i].Quantum; k++) {
 
 							p[myQueue[i].List_index[myQueue[i].Front]].Work_time++;
 							p[myQueue[i].List_index[myQueue[i].Front]].Remain_time--;
@@ -442,40 +441,40 @@ void MLFQ(PROCESS* p,int case) // by YJ
 						}
 							break;
 					}
-					else {                    //Remain_time을 모두 소비했을 경우  큐에서 제거
+					else {
 							myQueue[i].Front++;
 							num--;
 					}
 				}
 
-				else {     //두개 이상의 process 존재
-					if (p[myQueue[i].List_index[myQueue[i].Front]].Work_time >= myQueue[i].Quantum) {    //실행된 시간이 time quantum보다 같거나 클 경우 다음큐로 이동 시킴
-							int temp_index = myQueue[i].List_index[myQueue[i].Front];       
-							if (i != 3)            //제일 최하 우선순위 큐가 아닐 경우(아래 큐로 바꾸기 위해)
+				else {     
+					if (p[myQueue[i].List_index[myQueue[i].Front]].Work_time >= myQueue[i].Quantum) {    
+							int temp_index = myQueue[i].List_index[myQueue[i].Front];
+							if (i != 2)           
 							{
 								myQueue[i + 1].List_index[myQueue[i + 1].Rear] = temp_index;
-								p[myQueue[i].List_index[myQueue[i].Front]].Work_time = 0;     //큐에서 실행된 시간 초기화
+								p[myQueue[i].List_index[myQueue[i].Front]].Work_time = 0;   
 								myQueue[i].Front++;
 								myQueue[i + 1].Rear++;
 							}  
-							else{            //제일 최하 우선순위 큐 일 경우 ==> 이동 할 큐가 없어서 
+							else{
 								
 									myQueue[i].List_index[myQueue[i].Rear] = temp_index;
-									p[myQueue[i].List_index[myQueue[i].Front]].Work_time = 0;     //큐에서 실행된 시간 초기화
+									p[myQueue[i].List_index[myQueue[i].Front]].Work_time = 0;   
 									myQueue[i].Front++;
 									myQueue[i].Rear++;
 								
 							}
 
-							if (myQueue[i].Front < myQueue[i].Rear)  //동일 큐에 다른 프로세스가 존재할 경우  
+							if (myQueue[i].Front < myQueue[i].Rear)   
 							{
 								for (int k = 0; k < myQueue[i].Quantum; k++) {
-									p[myQueue[i].List_index[myQueue[i].Front]].Work_time++;                   
+									p[myQueue[i].List_index[myQueue[i].Front]].Work_time++;           
 									p[myQueue[i].List_index[myQueue[i].Front]].Remain_time--;
 									matrix[myQueue[i].List_index[myQueue[i].Front]][time] = 1;
 									time++;
 
-									if (p[myQueue[i].List_index[myQueue[i].Front]].Remain_time == 0)    //실행 시간이 다 되었을 경우
+									if (p[myQueue[i].List_index[myQueue[i].Front]].Remain_time == 0)
 									{
 										myQueue[i].Front++;
 										num--;
@@ -486,19 +485,20 @@ void MLFQ(PROCESS* p,int case) // by YJ
 								break;
 							}
 							
+							
 					}
 
-					else            //Work_time이 time_quantum보다 작을 때   ==> 즉, 다음 큐로 내려가지 않고 큐에 그대로 남아있음
+					else
 					{
 						
-						if (p[myQueue[i].List_index[myQueue[i].Front]].Remain_time>0) {          //실행 시간이 남아있을 경우
+						if (p[myQueue[i].List_index[myQueue[i].Front]].Remain_time>0) {
 							for (int k = 0; k < myQueue[i].Quantum; k++) {
-								p[myQueue[i].List_index[myQueue[i].Front]].Work_time++;                
+								p[myQueue[i].List_index[myQueue[i].Front]].Work_time++;                   
 								p[myQueue[i].List_index[myQueue[i].Front]].Remain_time--;
 								matrix[myQueue[i].List_index[myQueue[i].Front]][time] = 1;
 								time++;     
 
-								if (p[myQueue[i].List_index[myQueue[i].Front]].Remain_time == 0) //실행시간이 남아 있지 않을 경우
+								if (p[myQueue[i].List_index[myQueue[i].Front]].Remain_time == 0)
 								{
 									myQueue[i].Front++;
 									num--;
@@ -513,11 +513,12 @@ void MLFQ(PROCESS* p,int case) // by YJ
 				}
 			}
 			i++;
-			if (i == 4)                 //모든 큐 검색 완료
+			if (i == 4)
 				break;
 		} 		
+		
 	
-		if(time>=total_time)             //총 실행시간 넘을 경우 종료
+		if(time>=total_time)
 		{
 			break;
 		}
