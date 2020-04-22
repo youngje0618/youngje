@@ -178,7 +178,7 @@ int CM(PROCESS* p) // for Stride
 void FIFO(PROCESS* p) // by YJ
 {
 	int time=0;
-	int min;
+	int min;                               //
 	int min_index;
 	int total_time=TotalTime(p);
 	int **matrix=(int**)malloc(sizeof(int*)*5);
